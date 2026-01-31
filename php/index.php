@@ -10,11 +10,15 @@ if (session_status() === PHP_SESSION_NONE) {
 $username = $_SESSION['username'] ?? null;
 
 if (isset($_GET['q'])) {
-    $q = $_GET['q'];
-    $sql = "SELECT username, created_at FROM users WHERE username = '$q'";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute();
-    $res = $stmt->fetchAll();
+    try {
+        $q = $_GET['q'];
+        $sql = "SELECT username, created_at FROM users WHERE username = '$q'";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute();
+        $res = $stmt->fetchAll();
+    } catch (PDOException $e) {
+        echo "Connection failed: " . $e->getMessage();
+    }
 }
 ?>
 
@@ -40,6 +44,7 @@ if (isset($_GET['q'])) {
     if ($username == 'admin') {
         echo 'Flag: HETRUONG{klqi_h9FElc?si=oVal0wV8AbdAmJOs}<br>';
     }
+    echo __DIR__;
     ?>
 
     <form action="index.php" method="GET">
