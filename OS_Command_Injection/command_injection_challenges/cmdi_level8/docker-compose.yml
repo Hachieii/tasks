@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  cmdi_level8_db:
+    build:
+      context: ./cmdi_level8_db
+      dockerfile: Dockerfile
+    container_name: cmdi_level8_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: challenge_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  cmdi_level8:
+    build:
+      context: ./cmdi_level8
+      dockerfile: Dockerfile
+    container_name: cmdi_level8
+    ports:
+      - "3008:80"
+    depends_on:
+      - cmdi_level8_db
+    environment:
+      MYSQL_HOSTNAME: cmdi_level8_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: challenge_db
+    volumes:
+      - ./cmdi_level8/src:/var/www/html
+
+volumes:
+  db_data:
